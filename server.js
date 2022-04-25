@@ -1,6 +1,6 @@
 const express = require('express');
-const mysql = require('mysql2');
-const inputCheck = require('./utils/inputCheck');
+const db = require('./db/connection');
+const apiRoutes = require('./routes/apiRoutes');
 
 const PORT = process.env.PORT || 3001;
 const app = express();
@@ -9,190 +9,19 @@ const app = express();
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 
-// Connect to database
-const db = mysql.createConnection(
-    {
-      host: 'localhost',
-      // Your MySQL username,
-      user: 'root',
-      // Your MySQL password
-      password: 'VanLouis15!',
-      database: 'business'
-    },
-    console.log('Connected to the election database.')
-);
-
-// GET all departments
-app.get('/api/department', (req, res) => {
-    const sql = `SELECT * FROM department`;
-
-  db.query(sql, (err, rows) => {
-    if (err) {
-      res.status(500).json({ error: err.message });
-      return;
-    }
-    res.json({
-      message: 'success',
-      data: rows
-    });
-  });
-});
-
-// Get a single department
-app.get('/api/department/:id', (req, res) => {
-    const sql = `SELECT * FROM department WHERE id = ?`;
-    const params = [req.params.id];
-  
-    db.query(sql, params, (err, row) => {
-      if (err) {
-        res.status(400).json({ error: err.message });
-        return;
-      }
-      res.json({
-        message: 'success',
-        data: row
-      });
-    });
-  });
-
-// Delete a department
-app.delete('/api/department/:id', (req, res) => {
-    const sql = `DELETE FROM department WHERE id = ?`;
-    const params = [req.params.id];
-
-    db.query(sql, params, (err, result) => {
-        if (err) {
-          res.statusMessage(400).json({ error: res.message });
-        } else if (!result.affectedRows) {
-          res.json({
-            message: 'Department not found'
-          });
-        } else {
-          res.json({
-            message: 'deleted',
-            changes: result.affectedRows,
-            id: req.params.id
-          });
-        }
-    });
-});
-
-// Add a new department
-app.post('/api/department', ({ body }, res) => {
-    const errors = inputCheck(
-      body,
-      'name'
-    );
-    if (errors) {
-      res.status(400).json({ error: errors });
-      return;
-    }
-  
-    const sql = `INSERT INTO department (name) VALUES (?)`;
-    const params = [
-      body.name
-    ];
-  
-    db.query(sql, params, (err, result) => {
-      if (err) {
-        res.status(400).json({ error: err.message });
-        return;
-      }
-      res.json({
-        message: 'success',
-        data: body
-      });
-    });
-  });
-
-  // Get all roles
-  app.get('/api/role', (req, res) => {
-    const sql = `SELECT * FROM role`;
-    db.query(sql, (err, rows) => {
-      if (err) {
-        res.status(500).json({ error: err.message });
-        return;
-      }
-      res.json({
-        message: 'success',
-        data: rows
-      });
-    });
-  });
-
-  // Get a single role by id
-  app.get('/api/role/:id', (req, res) => {
-    const sql = `SELECT * FROM role WHERE id = ?`;
-    const params = [req.params.id];
-    db.query(sql, params, (err, row) => {
-      if (err) {
-        res.status(400).json({ error: err.message });
-        return;
-      }
-      res.json({
-        message: 'success',
-        data: row
-      });
-    });
-  });
-
-  // Delete a single role
-  app.delete('/api/role/:id', (req, res) => {
-    const sql = `DELETE FROM role WHERE id = ?`;
-    const params = [req.params.id];
-    db.query(sql, params, (err, result) => {
-      if (err) {
-        res.status(400).json({ error: res.message });
-        // checks if anything was deleted
-      } else if (!result.affectedRows) {
-        res.json({
-          message: 'role not found'
-        });
-      } else {
-        res.json({
-          message: 'deleted',
-          changes: result.affectedRows,
-          id: req.params.id
-        });
-      }
-    });
-  });
-
-  // Add a new role
-app.post('/api/role', ({ body }, res) => {
-    const errors = inputCheck(
-      body,
-      'title', 'salary', 'department_id'
-    );
-    if (errors) {
-      res.status(400).json({ error: errors });
-      return;
-    }
-  
-    const sql = `INSERT INTO role (title, salary, department_id) VALUES (?,?,?)`;
-    const params = [
-      body.title,
-      body.salary,
-      body.department_id
-    ];
-  
-    db.query(sql, params, (err, result) => {
-      if (err) {
-        res.status(400).json({ error: err.message });
-        return;
-      }
-      res.json({
-        message: 'success',
-        data: body
-      });
-    });
-  });
+// Use apiRoutes
+app.use('/api', apiRoutes);
 
 // Default response for any other request (Not Found)
 app.use((req, res) => {
   res.status(404).end();
 });
 
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
+// Start server after DB connection
+db.connect(err => {
+  if (err) throw err;
+  console.log('Database connected.');
+  app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
+  });
 });
