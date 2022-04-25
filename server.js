@@ -21,9 +21,22 @@ const db = mysql.createConnection(
     console.log('Connected to the election database.')
 );
 
-db.query(`SELECT * FROM department`, (err, rows) => {
-    console.log(rows);
-});
+// // Show all departments
+// db.query(`SELECT * FROM department`, (err, rows) => {
+//     console.log(rows);
+// });
+
+// // Add a new department
+// const sql = `INSERT INTO department (name)
+//                 VALUES (?)`;
+// const params = ['Human Resources'];
+
+// db.query(sql, params, (err, results) => {
+//     if (err) {
+//         console.log(err);
+//     }
+//     console.log(results);
+// });
 
 // Default response for any other request (Not Found)
 app.use((req, res) => {
