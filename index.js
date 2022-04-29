@@ -10,18 +10,30 @@ const connection = mysql.createConnection({
   database: 'business'
 });
 
+// shows connectiuon err or displays connection id at userPrompt start up
 connection.connect(err => {
   if (err) throw err;
   console.log('connected as id ' + connection.threadId);
-  userPrompt();
+  welcome();
 });
 
-// function which prompts the user for what action they should take
+// After connection is established display welcome image with project name 
+welcome = () => {
+  console.log("***********************************")
+  console.log("*                                 *")
+  console.log("*        EMPLOYEE TRACKER         *")
+  console.log("*        FOR YOUR BUSINESS        *")
+  console.log("*                                 *")
+  console.log("***********************************")
+  userPrompt();
+};
+
+// function which prompts the user for what action they should take (inquirer package)
 const userPrompt = () => {
   inquirer.prompt ([
     {
       type: 'list',
-      name: 'options', 
+      name: 'choices', 
       message: 'What information would you like to view, add or update?',
       choices: ['View all departments', 
                 'View all roles', 
@@ -33,6 +45,7 @@ const userPrompt = () => {
                 'Exit']
     }
   ])
+    // option direction after user selects an option from the choices list
     .then((answers) => {
       const { choices } = answers; 
 
@@ -71,32 +84,46 @@ const userPrompt = () => {
 };
 
 showDepartments = () => {
-  const sql = `SELECT * department`; 
+  console.log('Showing all departments...\n');
+  connection.query(
+    `SELECT department.id AS id, department.name AS department FROM department`,
 
-  connection.promise().query(sql, (err, rows) => {
-    if (err) throw err;
-    console.table(rows);
-    userPrompt();
-  });
-};
- 
-showRoles = () => {
- 
-  const sql = `SELECT * role`;
-  
-  connection.promise().query(sql, (err, rows) => {
-    if (err) throw err; 
-    console.table(rows); 
+  function(err, rows) {
+    console.table(rows); // results contains rows returned by server
     userPrompt();
   })
 };
 
-showEmployees = () => {
-  const sql = `SELECT * employee`
+showRoles = () => {
+  console.log('Showing all roles...\n');
+  connection.query(
+    `SELECT role.id, role.title, department.name AS department
+      FROM role
+      INNER JOIN department ON role.department_id = department.id`,
 
-  connection.promise().query(sql, (err, rows) => {
-    if (err) throw err; 
+      function(err, rows) {
+        console.table(rows);
+        userPrompt();
+  })
+};
+
+showEmployees = () => {
+  console.log('Showing all employees...\n');
+  connection.query(
+    `SELECT employee.id, 
+          employee.first_name, 
+          employee.last_name, 
+          role.title, 
+          department.name AS department,
+          role.salary, 
+          CONCAT (manager.first_name, " ", manager.last_name) AS manager
+    FROM employee
+          LEFT JOIN role ON employee.role_id = role.id
+          LEFT JOIN department ON role.department_id = department.id
+          LEFT JOIN employee manager ON employee.manager_id = manager.id`,
+
+  function(err, rows) {
     console.table(rows);
     userPrompt();
-  });
+  })
 };
