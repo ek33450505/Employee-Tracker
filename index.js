@@ -78,7 +78,7 @@ const userPrompt = () => {
       }
 
       if (choices === "Exit") {
-        connection.end()
+        connection.end();
     };
   });
 };
@@ -126,4 +126,32 @@ showEmployees = () => {
     console.table(rows);
     userPrompt();
   })
+};
+
+addDepartment = () => {
+  inquirer.prompt([
+    {
+      type: 'input',
+      name: 'addDepartment',
+      message: 'What department name would you like to add?',
+      validate: addDepartment => {
+        if(addDepartment) {
+          return true;
+        } else {
+          console.log('Invalid input, please try again!');
+          return false;
+        }
+      }
+    }
+  ])
+    .then(answer => {
+      const sql = `INSERT INTO department (name)
+                    VALUES (?)`;
+      connection.query(sql, answer.addDepartment, (err, result) => {
+        if (err) throw err;
+        console.log('Added ' + answer.addDepartment + " to departments!");
+
+        showDepartments();
+      });
+    });
 };
