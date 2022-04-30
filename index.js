@@ -1,6 +1,7 @@
 const mysql = require('mysql2')
 const inquirer = require('inquirer'); 
 const cTable = require('console.table'); 
+const { query } = require('express');
 
 // connection to database
 const connection = mysql.createConnection({
@@ -155,3 +156,35 @@ addDepartment = () => {
       });
     });
 };
+
+addRole = () => {
+  inquirer
+      .prompt([
+          {
+              name: "title",
+              type: "input",
+              message: "What is the employee title for this role?"
+          },
+          {
+              name: "salary",
+              type: "input",
+              message: "What is the salary for this role?"
+          },
+          {
+              name: "departmentId",
+              type: "input",
+              message: "What is the department ID for this role?"
+          }
+      ])
+      //Then insert information added, to the table
+      .then(function (answer) {
+          const query = "INSERT INTO role (title, salary, department_id) VALUES (?, ?, ?)";
+
+          connection.query(query, [answer.title, Number(answer.salary), Number(answer.departmentId)], function(err, res) {
+              if (err) throw err;
+              console.log('Added ' + answer.title + " to departments!");
+              showRoles()
+          });
+      })
+}
+
