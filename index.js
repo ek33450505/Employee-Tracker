@@ -176,7 +176,6 @@ addRole = () => {
               message: "What is the department ID for this role?"
           }
       ])
-      //Then insert information added, to the table
       .then(function (answer) {
           const query = "INSERT INTO role (title, salary, department_id) VALUES (?, ?, ?)";
 
@@ -186,5 +185,41 @@ addRole = () => {
               showRoles()
           });
       })
+};
+
+addEmployee = () => {
+  inquirer
+      .prompt([
+          {
+            name: 'firstName',
+            type: 'input',
+            message: 'What is your employees first name?'
+          },
+          {
+            name: 'lastName',
+            type: 'input',
+            message: 'What is your employees last name?'
+          },
+          {
+           name: 'roleId',
+            type: 'input',
+            message: 'What is your employees role id?'
+          },
+          {
+            name: 'managerId',
+            type: 'input',
+            message: 'What is your employees manager id?'
+          }
+      ])
+      .then(function (answer) {
+        const query = "INSERT INTO employee (first_name, last_name, role_id, manager_id) VALUES (?, ?, ?, ?)";
+
+        connection.query(query, [answer.firstName, answer.lastName, Number(answer.roleId), Number(answer.managerId)], function(err, res) {
+            if (err) throw err;
+            console.log("Employee added to database!");
+            console.table(answer);
+            userPrompt();
+        });
+    })
 }
 
