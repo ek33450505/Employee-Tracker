@@ -40,7 +40,7 @@ THEN I am prompted to select an employee to update and their new role and this i
 
   Please use this link to view a video demonstration of the application working in my terminal:
   
-  https://drive.google.com/file/d/1UCd7BvKdDMtKIZ5Tmc4IpuELJnfEeVrj/view
+  https://drive.google.com/file/d/1UCd7BvKdDMtKIZ5Tmc4IpuELJnfEeVrj/view?usp=sharing
  
   ## License: 
 
