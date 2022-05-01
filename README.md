@@ -24,3 +24,40 @@ WHEN I choose to add an employee
 THEN I am prompted to enter the employee’s first name, last name, role, and manager, and that employee is added to the database
 WHEN I choose to update an employee role
 THEN I am prompted to select an employee to update and their new role and this information is updated in the database
+
+ ## Table of Contents
+  - [Description](#description)
+  - [Installation](#installation)
+  - [Visualization](#visualization)
+  - [Contributors](#contributors)
+  - [Tests](#tests)
+  - [Contact](#contact)
+
+  ## Installation: 
+  To install this program please enter: (git clone https://github.com/ek33450505/Employee-Tracker) in your computers terminal and open in your code editor. Please ensure you have Node.js installed on you computer of this repository will not work. To run the application you must also enter [npm install] in your command line in order to install the correct packages.
+ 
+  ## Visualization:
+
+  Please use this link to view a video demonstration of the application working in my terminal:
+
+ 
+
+  ## License: 
+
+  There is no license for this project, you are free to use or modify this application.
+
+  ## Contributors:
+  
+  This application utilizes the following packages:
+
+    Inquirer https://www.npmjs.com/package/inquirer
+    MySQL2   https://www.npmjs.com/package/mysql2
+    console.table https://www.npmjs.com/package/console.table
+  
+  ## Tests:
+  Please see [Visualization](#visualization) for a visual demonstration of the project, working in my terminal and how it creates and updates a database with user input.
+
+  ## Contact:
+
+  - GitHub Username: [ek33450505](https://github.com/ek33450505)
+  - Email: ek33450505@gmail.com

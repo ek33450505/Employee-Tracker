@@ -75,7 +75,7 @@ const userPrompt = () => {
       }
 
       if (choices === "Update an employee role") {
-        updateEmployee();
+        updateEmployeeRole();
       }
 
       if (choices === "Exit") {
@@ -163,7 +163,7 @@ addRole = () => {
           {
               name: "title",
               type: "input",
-              message: "What is the employee title for this role?"
+              message: "What is the employees title for this role?"
           },
           {
               name: "salary",
@@ -182,7 +182,7 @@ addRole = () => {
           connection.query(query, [answer.title, Number(answer.salary), Number(answer.departmentId)], function(err, res) {
               if (err) throw err;
               console.log('Added ' + answer.title + " to departments!");
-              showRoles()
+              showRoles();
           });
       })
 };
@@ -217,9 +217,43 @@ addEmployee = () => {
         connection.query(query, [answer.firstName, answer.lastName, Number(answer.roleId), Number(answer.managerId)], function(err, res) {
             if (err) throw err;
             console.log("Employee added to database!");
-            console.table(answer);
-            userPrompt();
+            showEmployees();
         });
     })
+}
+
+updateEmployeeRole = () => {
+  inquirer
+    .prompt([
+      {
+        name: 'roleId',
+        type: 'input',
+        message: 'What is the current role id number of the employee you wish to updated?'
+      },
+      {
+        name: 'title',
+        type: 'input',
+        message: 'What is your employees new role title?'
+      },
+      {
+        name: 'salary',
+        type: 'input',
+        message: 'What is you employees updated role salary?'
+      },
+      {
+      name: 'departmentId',
+      type: 'input',
+      message: 'What is the updated department id number for this role?'
+      }
+    ])
+      .then(function(answer) {
+        const query = "UPDATE role SET title = ?, salary = ?, department_id = ? WHERE id = ?";
+
+        connection.query(query, [answer.title, Number(answer.salary), Number(answer.departmentId), Number(answer.roleId)], function(err, res) {
+          if (err) throw err;
+          console.log('Your employees role has been updated!');
+          showRoles();
+        });
+      });
 }
 
