@@ -50,9 +50,9 @@ THEN I am prompted to select an employee to update and their new role and this i
   
   This application utilizes the following packages:
 
-    Inquirer https://www.npmjs.com/package/inquirer
-    MySQL2   https://www.npmjs.com/package/mysql2
-    console.table https://www.npmjs.com/package/console.table
+    https://www.npmjs.com/package/inquirer
+    https://www.npmjs.com/package/mysql2
+    https://www.npmjs.com/package/console.table
   
   ## Tests:
   Please see [Visualization](#visualization) for a visual demonstration of the project, working in my terminal and how it creates and updates a database with user input.
